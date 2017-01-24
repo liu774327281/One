@@ -1,5 +1,6 @@
 package c.one.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -37,25 +38,30 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private Button login;
     private String s;//电话号码
     private ImageView login_qq;
-   private QQ qq;
+    private QQ qq;
     private String qq_userName;//qq用户名
     private String qq_userIconUrl;//qq头像的url
     private ImageView login_winxin;
 
     @Override
-    public int setLayoutResID (){
+    public int setLayoutResID(){
         return R.layout.activity_login;
     }
 
     @Override
-    protected int getImmerStateColor (){
+    protected int getImmerStateColor(){
         return 0;
     }
 
     @Override
-    public void initViews (){
+    public void initViews(){
         ShareSDK.initSDK(this, "1afe7db509d58");
-         qq=new QQ(this);
+        qq = new QQ(this);
+        //判断qq是否已经授权
+        if(qq.isAuthValid()){
+            //授权直接启动界面
+            qqLoginStartActivity();
+        }
         phone = (EditText) findViewById(R.id.act_login_edt_phone);
         code = (EditText) findViewById(R.id.act_login_edt_identifyingCode);
         getcode = (Button) findViewById(R.id.act_login_btn_get);
@@ -65,7 +71,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         SMSSDK.initSDK(this, "1af4d0af4db99", "cb7bdc4337901efe72d681663f00de3f");
         EventHandler eh = new EventHandler(){
             @Override
-            public void afterEvent (int event, int result, Object data){
+            public void afterEvent(int event, int result, Object data){
                 Message msg = new Message();
                 msg.arg1 = event;
                 msg.arg2 = result;
@@ -78,7 +84,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     }
 
     @Override
-    public void addListeners (){
+    public void addListeners(){
         getcode.setOnClickListener(this);
         login.setOnClickListener(this);
         login_qq.setOnClickListener(this);
@@ -86,15 +92,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     }
 
     @Override
-    public void initData (){
+    public void initData(){
     }
 
     @Override
-    public void addLogic (Bundle savedInstanceState){
+    public void addLogic(Bundle savedInstanceState){
     }
 
     @Override
-    public void onClick (View view){
+    public void onClick(View view){
         switch(view.getId()){
             case R.id.act_login_btn_get:
                 getcode();
@@ -111,40 +117,49 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
-    private void loginQQ (){
+    private void loginQQ(){
         //判断是否登录，没有登录则登录
         if(!qq.isAuthValid()){
             qq.authorize();
+        }else{
+            qqLoginStartActivity();
         }
         qq.setPlatformActionListener(new PlatformActionListener(){
             @Override
-            public void onComplete (Platform platform, int i, HashMap<String, Object> hashMap){
-                qq_userName = qq.getDb().getUserName();
-                qq_userIconUrl = qq.getDb().getUserIcon();
-                LJLogUtils.d(qq_userName);
-                LJLogUtils.d(qq_userIconUrl);
-
+            public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap){
+                qqLoginStartActivity();
             }
 
             @Override
-            public void onError (Platform platform, int i, Throwable throwable){
+            public void onError(Platform platform, int i, Throwable throwable){
             }
 
             @Override
-            public void onCancel (Platform platform, int i){
+            public void onCancel(Platform platform, int i){
             }
         });
     }
 
+    //当qq已经授权登录的时候，直接带数据进入MainActivity
+    public void qqLoginStartActivity(){
+        qq_userName = qq.getDb().getUserName();
+        qq_userIconUrl = qq.getDb().getUserIcon();
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.putExtra("qq_userName", qq_userName);
+        intent.putExtra("qq_userIconUrl", qq_userIconUrl);
+        startActivity(intent);
+        LoginActivity.this.finish();
+    }
+
     //获取验证码的方法
-    public void getcode (){
+    public void getcode(){
         s = phone.getText().toString();
         if(!TextUtils.isEmpty(s)){
             SMSSDK.getVerificationCode("86", s);
             getcode.setClickable(false);
             new Thread(new Runnable(){
                 @Override
-                public void run (){
+                public void run(){
                     for(int i = 60; i > 0; i--){
                         handler.sendEmptyMessage(CODE_ING);
                         if(i <= 0){
@@ -164,7 +179,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
-    public void login (){
+    public void login(){
         String ss = code.getText().toString();
         if(!TextUtils.isEmpty(ss)){
             SMSSDK.submitVerificationCode("86", s, ss);
@@ -176,7 +191,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     //验证码的回调判断
     Handler handler = new Handler(){
         @Override
-        public void handleMessage (Message msg){
+        public void handleMessage(Message msg){
             switch(msg.what){
                 case CODE_ING://已发送,倒计时
                     getcode.setBackgroundResource(R.drawable.btn_color2);
