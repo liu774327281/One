@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioGroup;
@@ -55,7 +56,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), list);
         viewPager = (ViewPager) findViewById(R.id.act_main_viewpager);
         viewPager.setAdapter(adapter);
-
         radioGroup = (RadioGroup) findViewById(R.id.act_main_radiogroup);
         drawerLayout = (DrawerLayout) findViewById(R.id.act_main_drwaerLayout);
         navigationView = (NavigationView) findViewById(R.id.act_main_navigationView);
@@ -132,12 +132,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     @Override
-    public void onBackPressed(){
-        //如果侧拉菜单打开，则关闭侧拉菜单，否则直接退出应用
-        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        //判读drawLayout是否是展开状态，如果是，则关闭，不是返回建把应用挂起
+        if(drawerLayout.isDrawerOpen(Gravity.LEFT)){
             drawerLayout.closeDrawer(Gravity.LEFT);
-        } else {
-            super.onBackPressed();
+        }else{
+            moveTaskToBack(false);
+            return true;
         }
+        return super.onKeyDown(keyCode, event);
     }
 }
