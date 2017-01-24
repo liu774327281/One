@@ -41,7 +41,7 @@ public class GuideActivity extends BaseActivity{
         prePosition = 0;
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         final LinearLayout dotLayout = (LinearLayout) findViewById(R.id.dot_layout);
-        int[] images = new int[]{R.drawable.chun, R.drawable.xia, R.drawable.qiu};
+        int[] images = new int[]{R.mipmap.a1, R.mipmap.a2, R.mipmap.a3, R.mipmap.a4};
         List<ImageView> imageViews = new ArrayList<>();
         for(int image : images){
             ImageView imageView = new ImageView(this);
@@ -85,7 +85,7 @@ public class GuideActivity extends BaseActivity{
             //其他滑动时，状态的变化为1—>2—>0
             @Override
             public void onPageScrollStateChanged (int state){
-                if(state == 0 && preState == 1 && currentPosition == 2){
+                if(state == 0 && preState == 1 && currentPosition == 3){
                     startActivity(new Intent(GuideActivity.this, LoginActivity.class));
                     GuideActivity.this.finish();
                 }

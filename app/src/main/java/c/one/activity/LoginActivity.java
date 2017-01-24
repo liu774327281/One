@@ -40,6 +40,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
    private QQ qq;
     private String qq_userName;//qq用户名
     private String qq_userIconUrl;//qq头像的url
+    private ImageView login_winxin;
 
     @Override
     public int setLayoutResID (){
@@ -60,6 +61,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         getcode = (Button) findViewById(R.id.act_login_btn_get);
         login = (Button) findViewById(R.id.act_login_btn_login);
         login_qq = (ImageView) findViewById(R.id.act_login_qq);
+        login_winxin = (ImageView) findViewById(R.id.act_login_weixin);
         SMSSDK.initSDK(this, "1af4d0af4db99", "cb7bdc4337901efe72d681663f00de3f");
         EventHandler eh = new EventHandler(){
             @Override
@@ -80,6 +82,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         getcode.setOnClickListener(this);
         login.setOnClickListener(this);
         login_qq.setOnClickListener(this);
+        login_winxin.setOnClickListener(this);
     }
 
     @Override
@@ -101,6 +104,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.act_login_qq:
                 loginQQ();
+                break;
+            case R.id.act_login_weixin:
+                startActivity(MainActivity.class);
                 break;
         }
     }
