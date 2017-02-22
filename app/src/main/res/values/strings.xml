@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">One</string>
     <string name="login">登录</string>
+    <string name="Collection">收藏</string>
+    <string name="money">钱包</string>
+    <string name="Album">相册</string>
+    <string name="file">文件</string>
 </resources>

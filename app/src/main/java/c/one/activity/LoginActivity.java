@@ -15,7 +15,6 @@ import java.util.HashMap;
 
 import c.one.R;
 import c.one.base.BaseActivity;
-import c.one.util.LJLogUtils;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
@@ -55,7 +54,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     @Override
     public void initViews(){
-        ShareSDK.initSDK(this, "1afe7db509d58");
+        ShareSDK.initSDK(this );
         qq = new QQ(this);
         //判断qq是否已经授权
         if(qq.isAuthValid()){

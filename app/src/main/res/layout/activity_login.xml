@@ -60,6 +60,7 @@
             android:background="@drawable/edit"
             android:hint="请输入验证码"
             android:maxEms="4" />
+
     </LinearLayout>
 
     <Button
