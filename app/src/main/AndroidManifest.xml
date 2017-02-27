@@ -41,7 +41,7 @@
             android:value="1136"></meta-data>
 
         <activity android:name=".activity.WelcomeActivity"
-            android:theme="@style/AppTheme.Splash">
+            android:theme="@style/AppSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
